@@ -1,4 +1,4 @@
-export const DOUGHS = {
+const DOUGHS = {
   Тонкое: {
     name: "light",
     checked: true,
@@ -9,30 +9,76 @@ export const DOUGHS = {
   },
 };
 
+export const normalizeDough = (array) => {
+  const doughArray = array.map((item) => {
+    return {
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      description: item.description,
+      price: item.price,
+      value: (item["value"] = DOUGHS[item.name].name),
+      checked: (item["checked"] = DOUGHS[item.name].checked),
+    };
+  });
+
+  return doughArray;
+};
+
 export const SIZES = {
   1: {
-    value: "small",
+    name: "small",
     checked: true,
   },
   2: {
-    value: "normal",
+    name: "normal",
     checked: false,
   },
   3: {
-    value: "big",
+    name: "big",
     checked: false,
   },
 };
 
+export const normalizeSize = (array) => {
+  const sizeArray = array.map((item) => {
+    return {
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      multiplier: item.multiplier,
+      value: (item["value"] = SIZES[item.multiplier].name),
+      checked: (item["checked"] = SIZES[item.multiplier].checked),
+    };
+  });
+
+  return sizeArray;
+};
+
 export const SAUCE = {
   Томатный: {
-    value: "tomato",
+    name: "tomato",
     checked: true,
   },
   Сливочный: {
-    value: "creamy",
+    name: "creamy",
     checked: false,
   },
+};
+
+export const normalizeSauce = (array) => {
+  const sauceArray = array.map((item) => {
+    return {
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      price: item.price,
+      value: (item["value"] = SAUCE[item.name].name),
+      checked: (item["checked"] = SAUCE[item.name].checked),
+    };
+  });
+
+  return sauceArray;
 };
 
 export const INGREDIENTS = {
@@ -81,4 +127,19 @@ export const INGREDIENTS = {
   "Блю чиз": {
     name: "blue_cheese",
   },
+};
+
+export const normalizeIngredients = (array) => {
+  const ingredientsArray = array.map((item) => {
+    return {
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      price: item.price,
+      value: (item["value"] = INGREDIENTS[item.name].name),
+      count: 0,
+    };
+  });
+
+  return ingredientsArray;
 };
