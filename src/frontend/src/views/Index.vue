@@ -1,23 +1,6 @@
 <template>
   <div>
-    <header class="header">
-      <div class="header__logo">
-        <a href="index.html" class="logo">
-          <img
-            src="../assets/img/logo.svg"
-            alt="V!U!E! Pizza logo"
-            width="90"
-            height="40"
-          />
-        </a>
-      </div>
-      <div class="header__cart">
-        <a href="cart.html">0 ₽</a>
-      </div>
-      <div class="header__user">
-        <a href="#" class="header__login"><span>Войти</span></a>
-      </div>
-    </header>
+    <AppLayout :orderCost="order.finishCost" />
 
     <main class="content">
       <form action="#" method="post">
@@ -31,15 +14,18 @@
           <BuilderIngredientsSelector
             :sauce="sauces"
             :dataArray="ingredients"
+            :currentIngredients="order.currentIngredients"
             @updateOrder="updateOrder"
             @updateIngredients="updateIngredients"
           />
 
           <BuilderPizzaView
-            :sizeValue="sizeValue"
-            :valueSauce="sauceValue"
-            :ingredientsArray="ingredientsArray"
-            :finishCost="finishCost"
+            :doughValue="doughValue"
+            :valueSauce="order.currentSauce"
+            :ingredientsArray="order.currentIngredients"
+            :finishCost="order.finishCost"
+            @getNamePizza="getNamePizza"
+            @onDrop="onDrop"
           />
         </div>
       </form>
@@ -57,6 +43,7 @@ import {
   normalizeSauce,
   normalizeIngredients,
 } from "@/common/helpers.js";
+import AppLayout from "@/layouts/AppLayout.vue";
 import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector.vue";
 import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelector.vue";
 import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector.vue";
@@ -73,14 +60,19 @@ export default {
       sizes: normalizeSize(Pizza.sizes),
       sauces: normalizeSauce(Pizza.sauces),
       ingredients: normalizeIngredients(Pizza.ingredients),
-      sizeValue: null,
-      sauceValue: null,
-      currentIngredient: null,
-      ingredientsArray: [],
-      finishCost: 0,
+      doughValue: null,
+      order: {
+        currentDough: null,
+        currentSize: null,
+        currentSauce: null,
+        currentIngredients: [],
+        finishCost: 0,
+        currentName: null,
+      },
     };
   },
   components: {
+    AppLayout,
     BuilderDoughSelector,
     BuilderSizeSelector,
     BuilderIngredientsSelector,
@@ -89,18 +81,26 @@ export default {
   methods: {
     updateOrder(newValue) {
       if (newValue.name === "dough") {
+        this.order.currentDough = newValue.value;
+
         if (newValue.value === "light") {
-          this.sizeValue = "small";
+          this.doughValue = "small";
         } else {
-          this.sizeValue = "big";
+          this.doughValue = "big";
         }
       }
 
       if (newValue.name === "sauce") {
-        this.sauceValue = newValue.value;
+        this.order.currentSauce = newValue.value;
       }
 
-      this.getCost();
+      if (newValue.name === "diameter") {
+        this.order.currentSize = newValue.value;
+      }
+
+      this.$nextTick(() => {
+        this.getCost();
+      });
     },
     updateIngredients(newValue) {
       this.ingredients.forEach((item) => {
@@ -109,18 +109,58 @@ export default {
           : item.count;
       });
 
-      this.ingredientsArray = this.ingredients.filter((item) => item.count > 0);
+      this.order.currentIngredients = this.ingredients.filter(
+        (item) => item.count > 0
+      );
+
+      this.$nextTick(() => {
+        this.getCost();
+      });
     },
     getCost() {
-      const checketDought = this.doughs.filter((item) => item.checked === true);
-      console.log(checketDought[0].price);
-      const checkedSize = this.sizes.filter((item) => item.checked === true);
-      console.log(checkedSize[0].multiplier);
-      const checkedSauce = this.sauces.filter((item) => item.checked === true);
-      console.log(checkedSauce[0].price);
-      this.finishCost =
+      const checketDought = this.doughs.filter(
+        (item) => item.value === this.order.currentDough
+      );
+
+      const checkedSize = this.sizes.filter(
+        (item) => item.value === this.order.currentSize
+      );
+
+      const checkedSauce = this.sauces.filter(
+        (item) => item.value === this.order.currentSauce
+      );
+
+      var ingredientsPrices = 0;
+
+      if (this.order.currentIngredients.length > 0) {
+        ingredientsPrices = this.order.currentIngredients
+          .map((item) => item.count * item.price)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue
+          );
+      }
+
+      this.order.finishCost =
         checkedSize[0].multiplier *
-        (checketDought[0].price + checkedSauce[0].price);
+        (checketDought[0].price + checkedSauce[0].price + ingredientsPrices);
+    },
+    getNamePizza(pizzaName) {
+      console.log(pizzaName);
+      this.order.currentName = pizzaName;
+    },
+    onDrop(addIngredient) {
+      this.ingredients
+        .filter((item) => item.value === addIngredient)
+        .forEach((item) => {
+          item.count += 1;
+
+          if (item.count <= 3) {
+            this.updateIngredients({
+              name: addIngredient,
+              count: item.count,
+            });
+          }
+        });
     },
   },
 };

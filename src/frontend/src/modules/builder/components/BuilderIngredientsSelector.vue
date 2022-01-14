@@ -24,10 +24,12 @@
               :key="item.id"
               class="ingredients__item"
             >
-              <SelectorItem :itemValue="item.value" :itemName="item.name" />
+              <AppDrag :transferData="item.value">
+                <SelectorItem :itemValue="item.value" :itemName="item.name" />
+              </AppDrag>
               <ItemCounter
                 :inputName="item.value"
-                :counterValue="item.count"
+                :currentIngredients="currentIngredients"
                 @updateIngredients="updateIngredients"
               />
             </li>
@@ -42,6 +44,7 @@
 import RadioButton from "@/common/components/RadioButton";
 import SelectorItem from "@/common/components/SelectorItem";
 import ItemCounter from "@/common/components/ItemCounter";
+import AppDrag from "@/common/components/AppDrag";
 
 export default {
   name: "BuilderIngredientsSelector",
@@ -55,6 +58,7 @@ export default {
     RadioButton,
     SelectorItem,
     ItemCounter,
+    AppDrag,
   },
   props: {
     sauce: {
@@ -62,6 +66,10 @@ export default {
       required: true,
     },
     dataArray: {
+      type: Array,
+      required: true,
+    },
+    currentIngredients: {
       type: Array,
       required: true,
     },

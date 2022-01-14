@@ -35,16 +35,17 @@ export default {
     return {
       isDisableButtonMinus: true,
       isDisableButtonPlus: false,
+      counterValue: 0,
     };
   },
   props: {
     inputName: {
       type: String,
-      required: false,
+      required: true,
     },
-    counterValue: {
-      type: Number,
-      required: false,
+    currentIngredients: {
+      type: Array,
+      required: true,
     },
   },
   methods: {
@@ -54,7 +55,10 @@ export default {
       } else if (event.target.name === "plus") {
         this.counterValue += 1;
       }
-
+    },
+  },
+  watch: {
+    counterValue: function () {
       if (this.counterValue === 0) {
         this.isDisableButtonMinus = true;
       } else {
@@ -66,13 +70,17 @@ export default {
       } else {
         this.isDisableButtonPlus = false;
       }
-    },
-  },
-  watch: {
-    counterValue: function () {
+
       this.$emit("updateIngredients", {
         name: this.inputName,
         count: this.counterValue,
+      });
+    },
+    currentIngredients: function () {
+      this.currentIngredients.forEach((item) => {
+        item.value === this.inputName
+          ? (this.counterValue = item.count)
+          : this.counterValue;
       });
     },
   },
