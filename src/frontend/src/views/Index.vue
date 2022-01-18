@@ -7,25 +7,41 @@
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
 
-          <BuilderDoughSelector :dough="doughs" @updateOrder="updateOrder" />
+          <BuilderDoughSelector
+            :dough="dough"
+            @updateOrder="updateOrder"
+            :currentValue="order.currentDough"
+          />
 
-          <BuilderSizeSelector :diameter="sizes" @updateOrder="updateOrder" />
+          <BuilderSizeSelector
+            :diameter="diameter"
+            @updateOrder="updateOrder"
+            :currentValue="order.currentSize"
+          />
 
           <BuilderIngredientsSelector
-            :sauce="sauces"
+            :sauce="sauce"
             :dataArray="ingredients"
             :currentIngredients="order.currentIngredients"
             @updateOrder="updateOrder"
             @updateIngredients="updateIngredients"
+            @changeCounter="changeCounter"
+            @isDisableButtonPlus="isDisableButtonPlus"
+            :currentValue="order.currentSauce"
           />
 
           <BuilderPizzaView
             :doughValue="doughValue"
             :valueSauce="order.currentSauce"
             :ingredientsArray="order.currentIngredients"
-            :finishCost="order.finishCost"
             @getNamePizza="getNamePizza"
             @onDrop="onDrop"
+            :orderName="order.currentName"
+            :checketDought="checketDought"
+            :checkedSize="checkedSize"
+            :checkedSauce="checkedSauce"
+            @getCost="getCost"
+            :isDisabledButton="isDisabledButton"
           />
         </div>
       </form>
@@ -56,18 +72,18 @@ export default {
     return {
       misc,
       user,
-      doughs: normalizeDough(Pizza.dough),
-      sizes: normalizeSize(Pizza.sizes),
-      sauces: normalizeSauce(Pizza.sauces),
+      dough: normalizeDough(Pizza.dough),
+      diameter: normalizeSize(Pizza.sizes),
+      sauce: normalizeSauce(Pizza.sauces),
       ingredients: normalizeIngredients(Pizza.ingredients),
-      doughValue: null,
+      doughValue: "small",
       order: {
-        currentDough: null,
-        currentSize: null,
-        currentSauce: null,
+        currentDough: "light",
+        currentSize: "small",
+        currentSauce: "tomato",
         currentIngredients: [],
         finishCost: 0,
-        currentName: null,
+        currentName: "",
       },
     };
   },
@@ -80,6 +96,14 @@ export default {
   },
   methods: {
     updateOrder(newValue) {
+      this[newValue.name].forEach((item) => {
+        if (item.value === newValue.value) {
+          item.checked = newValue.checked;
+        } else {
+          item.checked = false;
+        }
+      });
+
       if (newValue.name === "dough") {
         this.order.currentDough = newValue.value;
 
@@ -97,10 +121,6 @@ export default {
       if (newValue.name === "diameter") {
         this.order.currentSize = newValue.value;
       }
-
-      this.$nextTick(() => {
-        this.getCost();
-      });
     },
     updateIngredients(newValue) {
       this.ingredients.forEach((item) => {
@@ -112,55 +132,73 @@ export default {
       this.order.currentIngredients = this.ingredients.filter(
         (item) => item.count > 0
       );
-
-      this.$nextTick(() => {
-        this.getCost();
-      });
-    },
-    getCost() {
-      const checketDought = this.doughs.filter(
-        (item) => item.value === this.order.currentDough
-      );
-
-      const checkedSize = this.sizes.filter(
-        (item) => item.value === this.order.currentSize
-      );
-
-      const checkedSauce = this.sauces.filter(
-        (item) => item.value === this.order.currentSauce
-      );
-
-      var ingredientsPrices = 0;
-
-      if (this.order.currentIngredients.length > 0) {
-        ingredientsPrices = this.order.currentIngredients
-          .map((item) => item.count * item.price)
-          .reduce(
-            (previousValue, currentValue) => previousValue + currentValue
-          );
-      }
-
-      this.order.finishCost =
-        checkedSize[0].multiplier *
-        (checketDought[0].price + checkedSauce[0].price + ingredientsPrices);
     },
     getNamePizza(pizzaName) {
-      console.log(pizzaName);
       this.order.currentName = pizzaName;
+    },
+    changeCounter(name) {
+      this.ingredients.forEach((item) => {
+        if (name.buttonName === "minus") {
+          item.value === name.inputName ? (item.count -= 1) : item.count;
+        } else {
+          item.value === name.inputName ? (item.count += 1) : item.count;
+        }
+      });
     },
     onDrop(addIngredient) {
       this.ingredients
         .filter((item) => item.value === addIngredient)
         .forEach((item) => {
-          item.count += 1;
+          if (item.count < 3) {
+            item.count += 1;
 
-          if (item.count <= 3) {
             this.updateIngredients({
               name: addIngredient,
               count: item.count,
             });
           }
         });
+    },
+    getCost(cost) {
+      this.order.finishCost = cost;
+    },
+  },
+  computed: {
+    checketDought() {
+      return this.dough.find((item) => {
+        if (item.value === this.order.currentDough) {
+          return item;
+        } else {
+          return 0;
+        }
+      });
+    },
+    checkedSize() {
+      return this.diameter.find((item) => {
+        if (item.value === this.order.currentSize) {
+          return item;
+        } else {
+          return 0;
+        }
+      });
+    },
+    checkedSauce() {
+      return this.sauce.find((item) => {
+        if (item.value === this.order.currentSauce) {
+          return item;
+        } else {
+          return 0;
+        }
+      });
+    },
+    isDisableButtonPlus(status) {
+      return status;
+    },
+    isDisabledButton() {
+      return this.order.currentName === "" ||
+        this.order.currentIngredients.length === 0
+        ? true
+        : false;
     },
   },
 };

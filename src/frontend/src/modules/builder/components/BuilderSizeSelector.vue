@@ -2,15 +2,19 @@
   <div class="content__diameter">
     <div class="sheet">
       <h2 class="title title--small sheet__title">Выберите размер</h2>
-
-      <RadioButton
-        classNameComponent="sheet__content diameter"
-        titleComponent=""
-        :dataArray="diameter"
-        labelClass="diameter__input diameter__input--"
-        inputName="diameter"
-        @updateOrder="updateOrder"
-      />
+      <div class="sheet__content diameter">
+        <RadioButton
+          v-for="item in diameter"
+          :key="item.id"
+          labelClass="diameter__input diameter__input--"
+          :inputName="`diameter`"
+          :nameElem="item.name"
+          :itemValue="item.value"
+          :isChecked="item.checked"
+          @updateOrder="updateOrder"
+          v-model="currentValue"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -29,10 +33,14 @@ export default {
       type: Array,
       required: true,
     },
+    currentValue: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
-    updateOrder(newValue) {
-      this.$emit("updateOrder", newValue);
+    updateOrder(data) {
+      this.$emit("updateOrder", data);
     },
   },
 };

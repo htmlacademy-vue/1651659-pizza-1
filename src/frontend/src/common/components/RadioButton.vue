@@ -1,49 +1,33 @@
 <template>
-  <div :class="classNameComponent">
-    <p v-if="titleComponent !== ''">{{ titleComponent }}</p>
-
-    <label
-      v-for="item in dataArray"
-      :key="item.id"
-      :class="labelClass + (addClass === 'true' ? item.value : '')"
-    >
-      <input
-        type="radio"
-        :name="inputName"
-        :value="item.value"
-        class="visually-hidden"
-        :checked="item.checked"
-        v-model="currentValue"
-      />
-      <b v-if="item.description">{{ item.name }}</b>
-      <span v-if="item.description">{{ item.description }}</span>
-      <span v-if="!item.description">{{ item.name }}</span>
-    </label>
-  </div>
+  <label :class="labelClass + (addClass === true ? itemValue : '')">
+    <input
+      type="radio"
+      :name="inputName"
+      :value="itemValue"
+      class="visually-hidden"
+      :checked="isChecked"
+      @input="update"
+    />
+    <b v-if="description">{{ nameElem }}</b>
+    <span v-if="description">{{ description }}</span>
+    <span v-if="!description">{{ nameElem }}</span>
+  </label>
 </template>
 
 <script>
 export default {
   name: "RadioButton",
 
-  data() {
-    return {
-      currentValue: "",
-    };
+  methods: {
+    update() {
+      this.$emit("updateOrder", {
+        checked: this.isChecked,
+        value: this.itemValue,
+        name: this.inputName,
+      });
+    },
   },
   props: {
-    classNameComponent: {
-      type: String,
-      required: true,
-    },
-    titleComponent: {
-      type: String,
-      required: true,
-    },
-    dataArray: {
-      type: Array,
-      required: true,
-    },
     labelClass: {
       type: String,
       required: true,
@@ -52,27 +36,26 @@ export default {
       type: String,
       required: true,
     },
-    addClass: {
+    itemValue: {
       type: String,
-      default: "true",
+      required: true,
     },
-  },
-  methods: {
-    updateCurrentValue() {
-      let test = this.dataArray.filter((item) => item.checked === true);
-      this.currentValue = test[0].value;
+    addClass: {
+      type: Boolean,
+      default: true,
     },
-  },
-  watch: {
-    currentValue: function () {
-      this.$emit("updateOrder", {
-        name: this.inputName,
-        value: this.currentValue,
-      });
+    description: {
+      type: String,
+      default: "",
     },
-  },
-  created() {
-    this.updateCurrentValue();
+    nameElem: {
+      type: String,
+      required: true,
+    },
+    isChecked: {
+      type: Boolean,
+      required: true,
+    },
   },
 };
 </script>

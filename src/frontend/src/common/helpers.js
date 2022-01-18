@@ -17,8 +17,8 @@ export const normalizeDough = (array) => {
       image: item.image,
       description: item.description,
       price: item.price,
-      value: (item["value"] = DOUGHS[item.name].name),
-      checked: (item["checked"] = DOUGHS[item.name].checked),
+      value: DOUGHS[item.name].name,
+      checked: DOUGHS[item.name].checked,
     };
   });
 
@@ -47,8 +47,8 @@ export const normalizeSize = (array) => {
       name: item.name,
       image: item.image,
       multiplier: item.multiplier,
-      value: (item["value"] = SIZES[item.multiplier].name),
-      checked: (item["checked"] = SIZES[item.multiplier].checked),
+      value: SIZES[item.multiplier].name,
+      checked: SIZES[item.multiplier].checked,
     };
   });
 
@@ -73,8 +73,8 @@ export const normalizeSauce = (array) => {
       name: item.name,
       image: item.image,
       price: item.price,
-      value: (item["value"] = SAUCE[item.name].name),
-      checked: (item["checked"] = SAUCE[item.name].checked),
+      value: SAUCE[item.name].name,
+      checked: SAUCE[item.name].checked,
     };
   });
 
@@ -136,7 +136,7 @@ export const normalizeIngredients = (array) => {
       name: item.name,
       image: item.image,
       price: item.price,
-      value: (item["value"] = INGREDIENTS[item.name].name),
+      value: INGREDIENTS[item.name].name,
       count: 0,
     };
   });

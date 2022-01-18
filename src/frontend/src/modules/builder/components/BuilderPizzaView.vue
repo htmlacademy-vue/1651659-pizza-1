@@ -7,7 +7,8 @@
           type="text"
           name="pizza_name"
           placeholder="Введите название пиццы"
-          v-model="inputValue"
+          :value="orderName"
+          @input="updateName"
         />
       </label>
 
@@ -24,7 +25,7 @@
       </div>
 
       <div class="content__result">
-        <p>Итого {{ finishCost }} ₽</p>
+        <p>Итого {{ getPizzaPrice }} ₽</p>
         <button type="button" class="button" :disabled="isDisabledButton">
           Готовьте!
         </button>
@@ -42,11 +43,6 @@ export default {
   components: {
     AppDrop,
   },
-  data() {
-    return {
-      inputValue: "",
-    };
-  },
   props: {
     doughValue: {
       type: String,
@@ -60,8 +56,30 @@ export default {
       type: Array,
       required: true,
     },
-    finishCost: {
-      type: Number,
+    orderName: {
+      type: String,
+      required: true,
+    },
+    checketDought: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    checkedSize: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    checkedSauce: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    isDisabledButton: {
+      type: Boolean,
       required: true,
     },
   },
@@ -79,17 +97,45 @@ export default {
     onDrop(addIngredient) {
       this.$emit("onDrop", addIngredient);
     },
+    updateName(event) {
+      this.$emit("getNamePizza", event.target.value);
+    },
   },
   computed: {
-    isDisabledButton() {
-      return this.inputValue === "" || this.ingredientsArray.length === 0
-        ? true
-        : false;
+    getDoughtPrice() {
+      return this.checketDought.price;
+    },
+    getSizePrice() {
+      return this.checkedSize.multiplier;
+    },
+    getSaucePrice() {
+      return this.checkedSauce.price;
+    },
+    getIngredientsPrice() {
+      if (this.ingredientsArray.length > 0) {
+        var ingredientsPrices = 0;
+
+        ingredientsPrices = this.ingredientsArray
+          .map((item) => item.count * item.price)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue
+          );
+
+        return ingredientsPrices;
+      }
+
+      return 0;
+    },
+    getPizzaPrice() {
+      return (
+        this.getSizePrice *
+        (this.getDoughtPrice + this.getSaucePrice + this.getIngredientsPrice)
+      );
     },
   },
   watch: {
-    inputValue: function () {
-      this.$emit("getNamePizza", this.inputValue);
+    getPizzaPrice: function () {
+      this.$emit("getCost", this.getPizzaPrice);
     },
   },
 };

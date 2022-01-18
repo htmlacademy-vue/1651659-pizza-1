@@ -4,16 +4,21 @@
       <h2 class="title title--small sheet__title">Выберите ингредиенты</h2>
 
       <div class="sheet__content ingredients">
-        <RadioButton
-          classNameComponent="ingredients__sauce"
-          titleComponent="Основной соус:"
-          :dataArray="sauce"
-          labelClass="radio ingredients__input"
-          inputName="sauce"
-          addClass="false"
-          checkedElem="checkedSauce"
-          @updateOrder="updateOrder"
-        />
+        <div class="ingredients__sauce">
+          <p>Основной соус:</p>
+          <RadioButton
+            v-for="item in sauce"
+            :key="item.id"
+            labelClass="radio ingredients__input"
+            :inputName="`sauce`"
+            :addClass="false"
+            :itemValue="item.value"
+            :nameElem="item.name"
+            :isChecked="item.checked"
+            @updateOrder="updateOrder"
+            v-model="currentValue"
+          />
+        </div>
 
         <div class="ingredients__filling">
           <p>Начинка:</p>
@@ -29,8 +34,9 @@
               </AppDrag>
               <ItemCounter
                 :inputName="item.value"
-                :currentIngredients="currentIngredients"
                 @updateIngredients="updateIngredients"
+                @changeCounter="changeCounter"
+                :counterValue="item.count"
               />
             </li>
           </ul>
@@ -49,11 +55,6 @@ import AppDrag from "@/common/components/AppDrag";
 export default {
   name: "BuilderIngredientsSelector",
 
-  data() {
-    return {
-      newArray: [],
-    };
-  },
   components: {
     RadioButton,
     SelectorItem,
@@ -69,17 +70,23 @@ export default {
       type: Array,
       required: true,
     },
-    currentIngredients: {
-      type: Array,
+    currentValue: {
+      type: String,
       required: true,
     },
   },
   methods: {
-    updateOrder(newValue) {
-      this.$emit("updateOrder", newValue);
+    updateOrder(data) {
+      this.$emit("updateOrder", data);
     },
     updateIngredients(newValue) {
       this.$emit("updateIngredients", newValue);
+    },
+    changeCounter(data) {
+      this.$emit("changeCounter", data);
+    },
+    isDisableButtonPlus(status) {
+      this.$emit("isDisableButtonPlus", status);
     },
   },
 };

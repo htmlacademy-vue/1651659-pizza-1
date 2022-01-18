@@ -31,57 +31,42 @@
 <script>
 export default {
   name: "ItemCounter",
-  data() {
-    return {
-      isDisableButtonMinus: true,
-      isDisableButtonPlus: false,
-      counterValue: 0,
-    };
-  },
+
   props: {
+    counterValue: {
+      type: Number,
+      required: true,
+    },
     inputName: {
       type: String,
       required: true,
     },
-    currentIngredients: {
-      type: Array,
-      required: true,
+  },
+  computed: {
+    isDisableButtonMinus: function () {
+      return this.counterValue === 0 ? true : false;
+    },
+    isDisableButtonPlus: function () {
+      return this.counterValue >= 3 ? true : false;
     },
   },
   methods: {
     changeCounter(event) {
-      if (event.target.name === "minus") {
-        this.counterValue -= 1;
-      } else if (event.target.name === "plus") {
-        this.counterValue += 1;
-      }
+      this.$emit("changeCounter", {
+        buttonName: event.target.name,
+        inputName: this.inputName,
+      });
     },
   },
   watch: {
     counterValue: function () {
-      if (this.counterValue === 0) {
-        this.isDisableButtonMinus = true;
-      } else {
-        this.isDisableButtonMinus = false;
-      }
-
-      if (this.counterValue === 3) {
-        this.isDisableButtonPlus = true;
-      } else {
-        this.isDisableButtonPlus = false;
-      }
-
       this.$emit("updateIngredients", {
         name: this.inputName,
         count: this.counterValue,
       });
     },
-    currentIngredients: function () {
-      this.currentIngredients.forEach((item) => {
-        item.value === this.inputName
-          ? (this.counterValue = item.count)
-          : this.counterValue;
-      });
+    isDisableButtonPlus: function () {
+      this.$emit("isDisableButtonPlus", this.isDisableButtonPlus);
     },
   },
 };

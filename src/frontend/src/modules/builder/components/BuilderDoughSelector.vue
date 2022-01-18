@@ -2,15 +2,20 @@
   <div class="content__dough">
     <div class="sheet">
       <h2 class="title title--small sheet__title">Выберите тесто</h2>
-
-      <RadioButton
-        classNameComponent="sheet__content dough"
-        titleComponent=""
-        inputName="dough"
-        :dataArray="dough"
-        labelClass="dough__input dough__input--"
-        @updateOrder="updateOrder"
-      />
+      <div class="sheet__content dough">
+        <RadioButton
+          v-for="item in dough"
+          :key="item.id"
+          :inputName="`dough`"
+          labelClass="dough__input dough__input--"
+          :itemValue="item.value"
+          :description="item.description"
+          :nameElem="item.name"
+          :isChecked="item.checked"
+          @updateOrder="updateOrder"
+          v-model="currentValue"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -29,10 +34,14 @@ export default {
       type: Array,
       required: true,
     },
+    currentValue: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
-    updateOrder(newValue) {
-      this.$emit("updateOrder", newValue);
+    updateOrder(data) {
+      this.$emit("updateOrder", data);
     },
   },
 };
