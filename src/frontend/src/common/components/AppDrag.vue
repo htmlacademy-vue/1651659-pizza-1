@@ -1,6 +1,6 @@
 <template>
   <div
-    :draggable="true"
+    :draggable="this.isDraggable"
     @dragstart.self="onDrag"
     @dragover.prevent
     @dragenter.prevent
@@ -19,6 +19,10 @@ export default {
       type: String,
       required: true,
     },
+    counterValue: {
+      type: Number,
+      required: true,
+    },
   },
   methods: {
     onDrag({ dataTransfer }) {
@@ -28,6 +32,11 @@ export default {
         DATA_TRANSFER_PAYLOAD,
         JSON.stringify(this.transferData)
       );
+    },
+  },
+  computed: {
+    isDraggable() {
+      return this.counterValue < 3 ? true : false;
     },
   },
 };

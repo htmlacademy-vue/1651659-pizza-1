@@ -25,7 +25,7 @@
       </div>
 
       <div class="content__result">
-        <p>Итого {{ getPizzaPrice }} ₽</p>
+        <p>Итого {{ orderPrice }} ₽</p>
         <button type="button" class="button" :disabled="isDisabledButton">
           Готовьте!
         </button>
@@ -60,26 +60,24 @@ export default {
       type: String,
       required: true,
     },
-    checketDought: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-    checkedSize: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-    checkedSauce: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
     isDisabledButton: {
       type: Boolean,
+      required: true,
+    },
+    doughPrice: {
+      type: Number,
+      required: true,
+    },
+    sizePrice: {
+      type: Number,
+      required: true,
+    },
+    saucePrice: {
+      type: Number,
+      required: true,
+    },
+    ingredientPrice: {
+      type: Number,
       required: true,
     },
   },
@@ -102,40 +100,16 @@ export default {
     },
   },
   computed: {
-    getDoughtPrice() {
-      return this.checketDought.price;
-    },
-    getSizePrice() {
-      return this.checkedSize.multiplier;
-    },
-    getSaucePrice() {
-      return this.checkedSauce.price;
-    },
-    getIngredientsPrice() {
-      if (this.ingredientsArray.length > 0) {
-        var ingredientsPrices = 0;
-
-        ingredientsPrices = this.ingredientsArray
-          .map((item) => item.count * item.price)
-          .reduce(
-            (previousValue, currentValue) => previousValue + currentValue
-          );
-
-        return ingredientsPrices;
-      }
-
-      return 0;
-    },
-    getPizzaPrice() {
+    orderPrice() {
       return (
-        this.getSizePrice *
-        (this.getDoughtPrice + this.getSaucePrice + this.getIngredientsPrice)
+        this.sizePrice *
+        (this.doughPrice + this.saucePrice + this.ingredientPrice)
       );
     },
   },
   watch: {
-    getPizzaPrice: function () {
-      this.$emit("getCost", this.getPizzaPrice);
+    orderPrice: function () {
+      this.$emit("getCost", this.orderPrice);
     },
   },
 };

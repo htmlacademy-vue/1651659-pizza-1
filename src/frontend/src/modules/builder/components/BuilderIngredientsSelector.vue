@@ -16,7 +16,6 @@
             :nameElem="item.name"
             :isChecked="item.checked"
             @updateOrder="updateOrder"
-            v-model="currentValue"
           />
         </div>
 
@@ -29,7 +28,7 @@
               :key="item.id"
               class="ingredients__item"
             >
-              <AppDrag :transferData="item.value">
+              <AppDrag :transferData="item.value" :counterValue="item.count">
                 <SelectorItem :itemValue="item.value" :itemName="item.name" />
               </AppDrag>
               <ItemCounter
@@ -70,10 +69,6 @@ export default {
       type: Array,
       required: true,
     },
-    currentValue: {
-      type: String,
-      required: true,
-    },
   },
   methods: {
     updateOrder(data) {
@@ -84,9 +79,6 @@ export default {
     },
     changeCounter(data) {
       this.$emit("changeCounter", data);
-    },
-    isDisableButtonPlus(status) {
-      this.$emit("isDisableButtonPlus", status);
     },
   },
 };

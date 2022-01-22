@@ -7,27 +7,19 @@
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
 
-          <BuilderDoughSelector
-            :dough="dough"
-            @updateOrder="updateOrder"
-            :currentValue="order.currentDough"
-          />
+          <BuilderDoughSelector :dough="dough" @updateOrder="updateOrder" />
 
           <BuilderSizeSelector
             :diameter="diameter"
             @updateOrder="updateOrder"
-            :currentValue="order.currentSize"
           />
 
           <BuilderIngredientsSelector
             :sauce="sauce"
             :dataArray="ingredients"
-            :currentIngredients="order.currentIngredients"
             @updateOrder="updateOrder"
             @updateIngredients="updateIngredients"
             @changeCounter="changeCounter"
-            @isDisableButtonPlus="isDisableButtonPlus"
-            :currentValue="order.currentSauce"
           />
 
           <BuilderPizzaView
@@ -37,11 +29,12 @@
             @getNamePizza="getNamePizza"
             @onDrop="onDrop"
             :orderName="order.currentName"
-            :checketDought="checketDought"
-            :checkedSize="checkedSize"
-            :checkedSauce="checkedSauce"
-            @getCost="getCost"
             :isDisabledButton="isDisabledButton"
+            @getCost="getCost"
+            :doughPrice="doughPrice"
+            :sizePrice="sizePrice"
+            :saucePrice="saucePrice"
+            :ingredientPrice="ingredientPrice"
           />
         </div>
       </form>
@@ -139,9 +132,13 @@ export default {
     changeCounter(name) {
       this.ingredients.forEach((item) => {
         if (name.buttonName === "minus") {
-          item.value === name.inputName ? (item.count -= 1) : item.count;
+          if (item.value === name.inputName) {
+            item.count -= 1;
+          }
         } else {
-          item.value === name.inputName ? (item.count += 1) : item.count;
+          if (item.value === name.inputName) {
+            item.count += 1;
+          }
         }
       });
     },
@@ -164,35 +161,53 @@ export default {
     },
   },
   computed: {
-    checketDought() {
-      return this.dough.find((item) => {
-        if (item.value === this.order.currentDough) {
-          return item;
-        } else {
-          return 0;
-        }
-      });
+    doughPrice() {
+      if (this.order.currentDough != "") {
+        const doughPrice = this.dough.filter(
+          (item) => item.value === this.order.currentDough
+        );
+
+        return doughPrice[0].price;
+      }
+
+      return 0;
     },
-    checkedSize() {
-      return this.diameter.find((item) => {
-        if (item.value === this.order.currentSize) {
-          return item;
-        } else {
-          return 0;
-        }
-      });
+    sizePrice() {
+      if (this.order.currentSize != "") {
+        const sizePrice = this.diameter.filter(
+          (item) => item.value === this.order.currentSize
+        );
+
+        return sizePrice[0].multiplier;
+      }
+
+      return 0;
     },
-    checkedSauce() {
-      return this.sauce.find((item) => {
-        if (item.value === this.order.currentSauce) {
-          return item;
-        } else {
-          return 0;
-        }
-      });
+    saucePrice() {
+      if (this.order.currentSauce != "") {
+        const saucePrice = this.sauce.filter(
+          (item) => item.value === this.order.currentSauce
+        );
+
+        return saucePrice[0].price;
+      }
+
+      return 0;
     },
-    isDisableButtonPlus(status) {
-      return status;
+    ingredientPrice() {
+      if (this.order.currentIngredients.length > 0) {
+        var ingredientsPrices = 0;
+
+        ingredientsPrices = this.order.currentIngredients
+          .map((item) => item.count * item.price)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue
+          );
+
+        return ingredientsPrices;
+      }
+
+      return 0;
     },
     isDisabledButton() {
       return this.order.currentName === "" ||

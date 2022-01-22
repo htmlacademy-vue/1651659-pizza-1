@@ -65,9 +65,6 @@ export default {
         count: this.counterValue,
       });
     },
-    isDisableButtonPlus: function () {
-      this.$emit("isDisableButtonPlus", this.isDisableButtonPlus);
-    },
   },
 };
 </script>

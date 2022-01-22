@@ -7,13 +7,12 @@
           v-for="item in dough"
           :key="item.id"
           :inputName="`dough`"
-          labelClass="dough__input dough__input--"
+          :labelClass="`dough__input dough__input--${item.value}`"
           :itemValue="item.value"
           :description="item.description"
           :nameElem="item.name"
           :isChecked="item.checked"
           @updateOrder="updateOrder"
-          v-model="currentValue"
         />
       </div>
     </div>
@@ -32,10 +31,6 @@ export default {
   props: {
     dough: {
       type: Array,
-      required: true,
-    },
-    currentValue: {
-      type: String,
       required: true,
     },
   },

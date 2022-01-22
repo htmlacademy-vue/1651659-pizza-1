@@ -1,5 +1,5 @@
 <template>
-  <label :class="labelClass + (addClass === true ? itemValue : '')">
+  <label :class="labelClass">
     <input
       type="radio"
       :name="inputName"
@@ -39,10 +39,6 @@ export default {
     itemValue: {
       type: String,
       required: true,
-    },
-    addClass: {
-      type: Boolean,
-      default: true,
     },
     description: {
       type: String,

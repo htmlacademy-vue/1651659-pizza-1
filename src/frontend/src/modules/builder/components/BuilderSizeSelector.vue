@@ -6,13 +6,12 @@
         <RadioButton
           v-for="item in diameter"
           :key="item.id"
-          labelClass="diameter__input diameter__input--"
+          :labelClass="`diameter__input diameter__input--${item.value}`"
           :inputName="`diameter`"
           :nameElem="item.name"
           :itemValue="item.value"
           :isChecked="item.checked"
           @updateOrder="updateOrder"
-          v-model="currentValue"
         />
       </div>
     </div>
@@ -31,10 +30,6 @@ export default {
   props: {
     diameter: {
       type: Array,
-      required: true,
-    },
-    currentValue: {
-      type: String,
       required: true,
     },
   },
