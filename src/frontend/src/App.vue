@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <AppLayout :isLogged="isLogged" @logout="logout" />
-
-    <router-view />
+    <AppLayout :isLogged="isLogged" @logout="logout">
+      <router-view />
+    </AppLayout>
   </div>
 </template>
 
@@ -23,7 +23,12 @@ export default {
   },
   methods: {
     logout() {
+      if (this.$route.path == "/profile" || this.$route.path == "/orders") {
+        this.$router.push("/");
+      }
+
       this.isLogged = false;
+
       return this.isLogged;
     },
   },

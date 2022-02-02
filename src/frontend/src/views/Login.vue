@@ -1,9 +1,9 @@
 <template>
-  <div class="test">
+  <div class="sign-form-container">
     <div class="sign-form">
-      <router-link to="/" class="close close--white">
+      <button class="close close--white close--button" @click="$router.go(-1)">
         <span class="visually-hidden">Закрыть форму авторизации</span>
-      </router-link>
+      </button>
 
       <div class="sign-form__title">
         <h1 class="title title--small">Авторизуйтесь на сайте</h1>
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <style scoped>
-.test {
+.sign-form-container {
   position: fixed;
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 100;
@@ -46,5 +46,11 @@ export default {
   top: 0;
   right: 0;
   left: 0;
+}
+
+.close--button {
+  border: none;
+  background: transparent;
+  outline: none;
 }
 </style>

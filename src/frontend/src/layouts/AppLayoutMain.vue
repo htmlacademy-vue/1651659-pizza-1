@@ -1,6 +1,7 @@
 <template>
   <div class="app-layout-main">
     <AppLayoutHeader :isLogged="isLogged" @logout="$emit('logout')" />
+    <slot />
   </div>
 </template>
 

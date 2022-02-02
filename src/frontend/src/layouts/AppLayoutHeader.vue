@@ -13,7 +13,6 @@
 
     <div class="header__cart">
       <router-link to="/cart">{{ 1000 }} ₽</router-link>
-      <!-- <a href="cart.html"> {{ orderCost }} ₽</a> -->
     </div>
 
     <div class="header__user" v-if="isLogged">
@@ -55,10 +54,6 @@ export default {
   name: "AppLayoutHeader",
 
   props: {
-    orderCost: {
-      type: Number,
-      required: true,
-    },
     isLogged: {
       type: Boolean,
       required: true,

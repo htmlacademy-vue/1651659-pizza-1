@@ -4,6 +4,7 @@
 
     <main class="layout">
       <Sidebar />
+      <slot />
     </main>
   </div>
 </template>
