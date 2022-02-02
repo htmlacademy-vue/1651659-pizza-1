@@ -1,45 +1,38 @@
 <template>
-  <div>
-    <AppLayout :orderCost="order.finishCost" />
+  <main class="content">
+    <form action="#" method="post">
+      <div class="content__wrapper">
+        <h1 class="title title--big">Конструктор пиццы</h1>
 
-    <main class="content">
-      <form action="#" method="post">
-        <div class="content__wrapper">
-          <h1 class="title title--big">Конструктор пиццы</h1>
+        <BuilderDoughSelector :dough="dough" @updateOrder="updateOrder" />
 
-          <BuilderDoughSelector :dough="dough" @updateOrder="updateOrder" />
+        <BuilderSizeSelector :diameter="diameter" @updateOrder="updateOrder" />
 
-          <BuilderSizeSelector
-            :diameter="diameter"
-            @updateOrder="updateOrder"
-          />
+        <BuilderIngredientsSelector
+          :sauce="sauce"
+          :dataArray="ingredients"
+          @updateOrder="updateOrder"
+          @updateIngredients="updateIngredients"
+          @changeCounter="changeCounter"
+        />
 
-          <BuilderIngredientsSelector
-            :sauce="sauce"
-            :dataArray="ingredients"
-            @updateOrder="updateOrder"
-            @updateIngredients="updateIngredients"
-            @changeCounter="changeCounter"
-          />
-
-          <BuilderPizzaView
-            :doughValue="doughValue"
-            :valueSauce="order.currentSauce"
-            :ingredientsArray="order.currentIngredients"
-            @getNamePizza="getNamePizza"
-            @onDrop="onDrop"
-            :orderName="order.currentName"
-            :isDisabledButton="isDisabledButton"
-            @getCost="getCost"
-            :doughPrice="doughPrice"
-            :sizePrice="sizePrice"
-            :saucePrice="saucePrice"
-            :ingredientPrice="ingredientPrice"
-          />
-        </div>
-      </form>
-    </main>
-  </div>
+        <BuilderPizzaView
+          :doughValue="doughValue"
+          :valueSauce="order.currentSauce"
+          :ingredientsArray="order.currentIngredients"
+          @getNamePizza="getNamePizza"
+          @onDrop="onDrop"
+          :orderName="order.currentName"
+          :isDisabledButton="isDisabledButton"
+          @getCost="getCost"
+          :doughPrice="doughPrice"
+          :sizePrice="sizePrice"
+          :saucePrice="saucePrice"
+          :ingredientPrice="ingredientPrice"
+        />
+      </div>
+    </form>
+  </main>
 </template>
 
 <script>
@@ -52,7 +45,6 @@ import {
   normalizeSauce,
   normalizeIngredients,
 } from "@/common/helpers.js";
-import AppLayout from "@/layouts/AppLayout.vue";
 import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector.vue";
 import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelector.vue";
 import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector.vue";
@@ -81,7 +73,6 @@ export default {
     };
   },
   components: {
-    AppLayout,
     BuilderDoughSelector,
     BuilderSizeSelector,
     BuilderIngredientsSelector,
@@ -219,23 +210,4 @@ export default {
 };
 </script>
 
-<style>
-.header__login::after {
-  margin-left: 8px;
-}
-
-.header__login::after,
-.header__logout::before {
-  content: "";
-  background: url(../assets/img/login.svg) no-repeat center;
-  background-size: auto 50%;
-}
-.header__login::after,
-.header__logout::before,
-.header__user img {
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  vertical-align: middle;
-}
-</style>
+<style></style>
