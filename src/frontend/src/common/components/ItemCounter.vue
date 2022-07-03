@@ -4,8 +4,8 @@
       type="button"
       name="minus"
       class="counter__button counter__button--minus"
-      :disabled="isDisableButtonMinus"
-      @click="changeCounter"
+      :disabled="counterValue === 0 ? true : false"
+      @click="updateCounterIngredients"
     >
       <span class="visually-hidden">Меньше</span>
     </button>
@@ -14,14 +14,15 @@
       :name="inputName"
       class="counter__input"
       :value="counterValue"
+      @input="updatePizzaIngredients"
       readonly
     />
     <button
       type="button"
       name="plus"
       class="counter__button counter__button--plus"
-      :disabled="isDisableButtonPlus"
-      @click="changeCounter"
+      :disabled="counterValue >= 3 ? true : false"
+      @click="updateCounterIngredients"
     >
       <span class="visually-hidden">Больше</span>
     </button>
@@ -29,6 +30,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "ItemCounter",
 
@@ -42,28 +45,21 @@ export default {
       required: true,
     },
   },
-  computed: {
-    isDisableButtonMinus: function () {
-      return this.counterValue === 0 ? true : false;
-    },
-    isDisableButtonPlus: function () {
-      return this.counterValue >= 3 ? true : false;
-    },
-  },
   methods: {
-    changeCounter(event) {
-      this.$emit("changeCounter", {
+    ...mapActions("Builder", ["getCounterIngredients", "UPDATE_INGREDIENTS"]),
+    updateCounterIngredients(event) {
+      this.getCounterIngredients({
         buttonName: event.target.name,
         inputName: this.inputName,
       });
     },
-  },
-  watch: {
-    counterValue: function () {
-      this.$emit("updateIngredients", {
-        name: this.inputName,
-        count: this.counterValue,
-      });
+    updatePizzaIngredients() {
+      this.UPDATE_INGREDIENTS([
+        {
+          value: this.inputName,
+          count: this.counterValue,
+        },
+      ]);
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="app-layout-main">
-    <AppLayoutHeader :isLogged="isLogged" @logout="$emit('logout')" />
+    <AppLayoutHeader />
 
     <main class="layout">
       <Sidebar />
@@ -19,12 +19,6 @@ export default {
   components: {
     Sidebar,
     AppLayoutHeader,
-  },
-  props: {
-    isLogged: {
-      type: Boolean,
-      required: true,
-    },
   },
 };
 </script>

@@ -15,7 +15,6 @@
             :itemValue="item.value"
             :nameElem="item.name"
             :isChecked="item.checked"
-            @updateOrder="updateOrder"
           />
         </div>
 
@@ -24,19 +23,14 @@
 
           <ul class="ingredients__list">
             <li
-              v-for="item in dataArray"
+              v-for="item in ingredients"
               :key="item.id"
               class="ingredients__item"
             >
               <AppDrag :transferData="item.value" :counterValue="item.count">
                 <SelectorItem :itemValue="item.value" :itemName="item.name" />
               </AppDrag>
-              <ItemCounter
-                :inputName="item.value"
-                @updateIngredients="updateIngredients"
-                @changeCounter="changeCounter"
-                :counterValue="item.count"
-              />
+              <ItemCounter :inputName="item.value" :counterValue="item.count" />
             </li>
           </ul>
         </div>
@@ -50,6 +44,7 @@ import RadioButton from "@/common/components/RadioButton";
 import SelectorItem from "@/common/components/SelectorItem";
 import ItemCounter from "@/common/components/ItemCounter";
 import AppDrag from "@/common/components/AppDrag";
+import { mapGetters } from "vuex";
 
 export default {
   name: "BuilderIngredientsSelector",
@@ -60,26 +55,8 @@ export default {
     ItemCounter,
     AppDrag,
   },
-  props: {
-    sauce: {
-      type: Array,
-      required: true,
-    },
-    dataArray: {
-      type: Array,
-      required: true,
-    },
-  },
-  methods: {
-    updateOrder(data) {
-      this.$emit("updateOrder", data);
-    },
-    updateIngredients(newValue) {
-      this.$emit("updateIngredients", newValue);
-    },
-    changeCounter(data) {
-      this.$emit("changeCounter", data);
-    },
+  computed: {
+    ...mapGetters("Builder", ["sauce", "ingredients"]),
   },
 };
 </script>

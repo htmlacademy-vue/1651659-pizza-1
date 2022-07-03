@@ -7,16 +7,16 @@
           type="text"
           name="pizza_name"
           placeholder="Введите название пиццы"
-          :value="orderName"
+          :value="currentName"
           @input="updateName"
         />
       </label>
 
       <div class="content__constructor">
-        <div :class="`pizza pizza--foundation--${doughValue}-${valueSauce}`">
+        <div :class="`pizza pizza--foundation--${doughValue}-${currentSauce}`">
           <div class="pizza__wrapper">
             <div
-              v-for="item of ingredientsArray"
+              v-for="item of currentIngredients"
               :key="item.id"
               :class="addClasses(item.value, item.count)"
             ></div>
@@ -25,8 +25,13 @@
       </div>
 
       <div class="content__result">
-        <p>Итого {{ orderPrice }} ₽</p>
-        <button type="button" class="button" :disabled="isDisabledButton">
+        <p>Итого {{ pizzaPrice }} ₽</p>
+        <button
+          type="button"
+          class="button"
+          :disabled="isDisabledButton"
+          @click.prevent="pushOrder"
+        >
           Готовьте!
         </button>
       </div>
@@ -36,50 +41,13 @@
 
 <script>
 import AppDrop from "@/common/components/AppDrop";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "BuilderPizzaView",
 
   components: {
     AppDrop,
-  },
-  props: {
-    doughValue: {
-      type: String,
-      required: true,
-    },
-    valueSauce: {
-      type: String,
-      required: true,
-    },
-    ingredientsArray: {
-      type: Array,
-      required: true,
-    },
-    orderName: {
-      type: String,
-      required: true,
-    },
-    isDisabledButton: {
-      type: Boolean,
-      required: true,
-    },
-    doughPrice: {
-      type: Number,
-      required: true,
-    },
-    sizePrice: {
-      type: Number,
-      required: true,
-    },
-    saucePrice: {
-      type: Number,
-      required: true,
-    },
-    ingredientPrice: {
-      type: Number,
-      required: true,
-    },
   },
   methods: {
     addClasses(value, count) {
@@ -95,22 +63,25 @@ export default {
     onDrop(addIngredient) {
       this.$emit("onDrop", addIngredient);
     },
+    ...mapActions("Builder", ["GET_NAME_PIZZA", "clearOrder"]),
+    ...mapActions("Cart", ["updateCart"]),
     updateName(event) {
-      this.$emit("getNamePizza", event.target.value);
+      this.GET_NAME_PIZZA(event.target.value);
+    },
+    pushOrder() {
+      this.updateCart();
+      this.clearOrder();
     },
   },
   computed: {
-    orderPrice() {
-      return (
-        this.sizePrice *
-        (this.doughPrice + this.saucePrice + this.ingredientPrice)
-      );
-    },
-  },
-  watch: {
-    orderPrice: function () {
-      this.$emit("getCost", this.orderPrice);
-    },
+    ...mapGetters("Builder", [
+      "doughValue",
+      "currentSauce",
+      "currentIngredients",
+      "pizzaPrice",
+      "isDisabledButton",
+      "currentName",
+    ]),
   },
 };
 </script>
