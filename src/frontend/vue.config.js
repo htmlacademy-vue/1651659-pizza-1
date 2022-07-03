@@ -2,11 +2,10 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        prependData: '@import "@/assets/scss/ds-system/ds.scss";',
+        additionalData: '@import "@/assets/scss/ds-system/ds.scss";',
       },
     },
   },
-
   devServer: {
     proxy: {
       "^/api": {
@@ -26,7 +25,6 @@ module.exports = {
         pathRewrite: { "/docs/explorer": "/explorer" },
       },
     },
-
     overlay: {
       warnings: true,
       errors: true,

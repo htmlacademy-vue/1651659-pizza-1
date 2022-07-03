@@ -12,7 +12,6 @@
           :description="item.description"
           :nameElem="item.name"
           :isChecked="item.checked"
-          @updateOrder="updateOrder"
         />
       </div>
     </div>
@@ -21,6 +20,7 @@
 
 <script>
 import RadioButton from "@/common/components/RadioButton";
+import { mapGetters } from "vuex";
 
 export default {
   name: "BuilderDoughSelector",
@@ -28,16 +28,8 @@ export default {
   components: {
     RadioButton,
   },
-  props: {
-    dough: {
-      type: Array,
-      required: true,
-    },
-  },
-  methods: {
-    updateOrder(data) {
-      this.$emit("updateOrder", data);
-    },
+  computed: {
+    ...mapGetters("Builder", ["dough"]),
   },
 };
 </script>

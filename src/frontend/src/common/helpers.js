@@ -2,10 +2,14 @@ const DOUGHS = {
   Тонкое: {
     name: "light",
     checked: true,
+    result: "на тонком тесте",
+    doughSize: "small",
   },
   Толстое: {
     name: "large",
     checked: false,
+    result: "на толстом тесте",
+    doughSize: "big",
   },
 };
 
@@ -19,6 +23,8 @@ export const normalizeDough = (array) => {
       price: item.price,
       value: DOUGHS[item.name].name,
       checked: DOUGHS[item.name].checked,
+      result: DOUGHS[item.name].result,
+      doughSize: DOUGHS[item.name].doughSize,
     };
   });
 
@@ -146,3 +152,15 @@ export const normalizeIngredients = (array) => {
 
 export const MOVE = "move";
 export const DATA_TRANSFER_PAYLOAD = "payload";
+
+export const normalizeMisc = (misc) => {
+  return misc.map((item) => {
+    return {
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      price: item.price,
+      quantity: 0,
+    };
+  });
+};

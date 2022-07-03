@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <AppLayout :isLogged="isLogged" @logout="logout">
+    <AppLayout>
       <router-view />
     </AppLayout>
   </div>
@@ -8,29 +8,11 @@
 
 <script>
 import AppLayout from "@/layouts/AppLayout.vue";
-import user from "@/static/user.json";
 
 export default {
   name: "App",
   components: {
     AppLayout,
-  },
-  data() {
-    return {
-      user,
-      isLogged: true,
-    };
-  },
-  methods: {
-    logout() {
-      if (this.$route.path == "/profile" || this.$route.path == "/orders") {
-        this.$router.push("/");
-      }
-
-      this.isLogged = false;
-
-      return this.isLogged;
-    },
   },
 };
 </script>

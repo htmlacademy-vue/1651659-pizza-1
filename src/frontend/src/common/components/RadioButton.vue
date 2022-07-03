@@ -6,7 +6,7 @@
       :value="itemValue"
       class="visually-hidden"
       :checked="isChecked"
-      @input="update"
+      @change="update"
     />
     <b v-if="description">{{ nameElem }}</b>
     <span v-if="description">{{ description }}</span>
@@ -15,16 +15,21 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "RadioButton",
 
   methods: {
+    ...mapActions("Builder", ["UPDATE_ORDER"]),
     update() {
-      this.$emit("updateOrder", {
-        checked: this.isChecked,
-        value: this.itemValue,
-        name: this.inputName,
-      });
+      this.UPDATE_ORDER([
+        {
+          checked: this.isChecked,
+          value: this.itemValue,
+          name: this.inputName,
+        },
+      ]);
     },
   },
   props: {

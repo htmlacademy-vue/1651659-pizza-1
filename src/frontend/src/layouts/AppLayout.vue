@@ -1,5 +1,5 @@
 <template>
-  <component :is="layout" :isLogged="isLogged" @logout="$emit('logout')">
+  <component :is="layout">
     <slot />
   </component>
 </template>
@@ -14,13 +14,6 @@ export default {
     layout() {
       const layout = this.$route.meta.layout || defaultLayout;
       return () => import(`@/layouts/${layout}.vue`);
-    },
-  },
-
-  props: {
-    isLogged: {
-      type: Boolean,
-      required: true,
     },
   },
 };

@@ -36,4 +36,9 @@ export default [
       layout: "AppLayoutMain",
     },
   },
+  {
+    path: "/popup",
+    name: "CartPopup",
+    component: () => import("@/modules/cart/components/CartPopup.vue"),
+  },
 ];
